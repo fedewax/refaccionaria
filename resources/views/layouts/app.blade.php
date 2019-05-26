@@ -34,7 +34,6 @@
      .top-right {
                 position: absolute;
                 right: 35px;
-       
             } 
 </style>
 <body>
@@ -59,17 +58,17 @@
                                 <!-- Authentication Links -->
                                 @guest
                                     <li class="nav-item">
-                                        <a style="color:blanchedalmond"  class="nav-link" href="{{ route('login') }}">{{ __('Login') }}</a>
+                                        <a style="color:blanchedalmond"  class="btn btn-outline-info " href="{{ url('/') }}">{{ __('Inicio') }}</a>
                                     </li>
                                    
                                 @else
                                     <li class="nav-item dropdown">
-                                        <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
+                                        <a id="navbarDropdown" class="nav-link dropdown-toggle" style="color:blanchedalmond" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
                                             {{ Auth::user()->name }} <span class="caret"></span>
                                         </a>
         
                                         <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
-                                            <a class="dropdown-item" @click="logout( {{ Auth::user()->id }} )">
+                                            <a class="dropdown-item"   @click="logout( {{ Auth::user()->id }} )">
                                                Cerrar sesión
                                             </a>
         

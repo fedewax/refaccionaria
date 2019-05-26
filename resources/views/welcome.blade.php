@@ -4,7 +4,6 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <title>Laravel</title>
-
         <!-- Fonts -->
         <link href="https://fonts.googleapis.com/css?family=Nunito:200,600" rel="stylesheet" type="text/css">
               <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
@@ -15,20 +14,19 @@
                   <a style="color:blanchedalmond"  class="navbar-brand" href="{{ url('/') }}">
                       Refaccionaria Guadalajara
                   </a>    
-          <div>        
+                <div>        
                   <!-- Right Side Of Navbar -->
                   <ul class="navbar-nav ml-auto">
                       <!-- Authentication Links -->
                       @guest
                           <li>
-                              <a style="color:blanchedalmond"   href="{{ route('login') }}">{{ __('Login') }}</a>
+                              <a style="color:blanchedalmond"  class="btn btn-outline-info"   href="{{ route('login') }}">{{ __('Login') }}</a>
                           </li>
                       @else
                           <li class="nav-item dropdown">
                               <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
                                   {{ Auth::user()->name }} <span class="caret"></span>
                               </a>
-
                               <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
                                   <a class="dropdown-item" @click="logout( {{ Auth::user()->id }} )">
                                      Cerrar sesión
@@ -51,8 +49,7 @@
       <div  class=" title text-center">
           <h1 >Administracion</h1> 
       </div>
-            
-        
+      
     </body>
     <!--Bootstrap-->
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
