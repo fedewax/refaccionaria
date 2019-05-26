@@ -6,19 +6,15 @@
 
 require('./bootstrap');
 
-window.Vue = require('vue');
 
 import Vue from 'vue'
 import BootstrapVue from 'bootstrap-vue'
 
 import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap-vue/dist/bootstrap-vue.css'
-//bootstrap-vue
+import Axios from 'axios';
+
 Vue.use(BootstrapVue)
-
-//end bootstrap-vue
-
-
 /**
  * The following block of code may be used to automatically register your
  * Vue components. It will recursively scan this directory for the Vue
@@ -32,6 +28,7 @@ Vue.use(BootstrapVue)
 
 Vue.component('example-component', require('./components/ExampleComponent.vue').default);
 
+
 /**
  * Next, we will create a fresh Vue application instance and attach it to
  * the page. Then, you may begin adding components to this application
@@ -40,4 +37,14 @@ Vue.component('example-component', require('./components/ExampleComponent.vue').
 
 const app = new Vue({
     el: '#app',
+    data() {
+        return {
+            menu : 0 
+        }
+    },
+    methods: {
+        logout() {
+    		document.getElementById('logout-form').submit();
+    	}
+    },
 });
