@@ -28,7 +28,8 @@ Vue.use(BootstrapVue)
 
 Vue.component('example-component', require('./components/ExampleComponent.vue').default);
 Vue.component('principal-component', require('./components/principalComponent.vue').default);
-
+Vue.component('crud-usuarios-component', require('./components/crudUsuariosComponent.vue').default);
+Vue.component('crud-productos-component', require('./components/crudProductosComponent.vue').default);
 
 
 /**

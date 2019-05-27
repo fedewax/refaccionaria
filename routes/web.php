@@ -21,4 +21,4 @@ Route::get('/home', 'HomeController@index')->name('home');
 
 
 //Ruta login
-Route::post('/miLogin', 'UserController@login');
+Route::get('/usuarios', 'UsuariosController@listarUsuarios');

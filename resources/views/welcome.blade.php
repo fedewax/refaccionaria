@@ -20,7 +20,7 @@
                       <!-- Authentication Links -->
                       @guest
                           <li>
-                              <a style="color:blanchedalmond"  class="btn btn-outline-info"   href="{{ route('login') }}">{{ __('Login') }}</a>
+                              <a style="color:blanchedalmond"  class="btn btn-outline-info"   href="{{ route('login') }}">{{ __('Iniciar sesion') }}</a>
                           </li>
                       @else
                           <li class="nav-item dropdown">
