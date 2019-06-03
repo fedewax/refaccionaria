@@ -20,5 +20,6 @@ Auth::routes();
 Route::get('/home', 'HomeController@index')->name('home');
 
 
-//Ruta login
+//Rutas Usuarios
 Route::get('/usuarios', 'UsuariosController@listarUsuarios');
+Route::post('/usuarios/agregar', 'UsuariosController@agregarUsuario');

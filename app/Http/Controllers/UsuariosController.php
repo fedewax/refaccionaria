@@ -7,9 +7,6 @@ use App\Usuario;
 
 class UsuariosController extends Controller
 {
-    // protected static $buscar;
-    // protected static $filtro;
-
     protected static function listarUsuarios(Request $request)
     {
         if (!$request->ajax()) return redirect('/');
@@ -30,5 +27,17 @@ class UsuariosController extends Controller
             ],
             'usuarios' => $obj
         ]; 
+    }
+
+    protected static function agregarUsuario(Request $request)
+    {
+        $clave = bcrypt($request->clave1);
+        
+        $array = array('nombre' => $request->nombre, 
+                        'email' => $request->email,
+                        'clave' => $clave,
+                        'rol'   => $request->rol);
+                        
+        Usuario::agregarUsuarioM($array);
     }
 }

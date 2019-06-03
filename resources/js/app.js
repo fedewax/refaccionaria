@@ -6,6 +6,7 @@
 
 require('./bootstrap');
 
+import Swal from 'sweetalert2'
 
 import Vue from 'vue'
 import BootstrapVue from 'bootstrap-vue'

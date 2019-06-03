@@ -1,7 +1,9 @@
 <template>
 <div>
     <!-- Page Heading -->
-          <h1 class="h3 text-gray-800">ADMINISTRACION DE USUARIOS</h1>
+     
+          <h1 class="h3 text-gray-800">LISTA DE USUARIOS</h1> 
+          <b-button @click="abrirModal('agregar')" variant="primary">Agregar &nbsp; <i class="fas fa-plus-circle"></i></b-button>
           <br>
           <!-- DataTales Example -->
           <div class="card shadow mb-4">
@@ -9,12 +11,12 @@
                   
                 <!-- Topbar Search -->
                 <div class="input-group">
-                  <select v-model="filtro" class="form-control bg-light border-0 small col-2">
+                  <select v-model="filtro" class="form-control bg-light border-0 small col-3">
                     <option value="name">Buscar por Nombre</option>
                     <option value="email">Buscar por E-mail</option>
                   </select>
-
-                  <input type="text" v-model="buscar"  @keyup.enter="listar(1,buscar,filtro)" class="form-control bg-light border-0 small col-4" placeholder="Buscar usuario..." aria-label="Search" aria-describedby="basic-addon2">
+                  &nbsp;  
+                  <input type="text" v-model="buscar"  @keyup="listar(1,buscar,filtro)" class="form-control bg-light border-0 small col-4" placeholder="Buscar usuario..." aria-label="Search" aria-describedby="basic-addon2">
                   <div class="input-group-append">
                     <button class="btn btn-primary" @click="listar(1,buscar,filtro)" type="button">
                       <i class="fas fa-search fa-sm"></i>
@@ -28,10 +30,10 @@
                 <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                   <thead>
                     <tr>
-                      <th>Nombre</th>
-                      <th>E-mail</th>
-                      <th>Rol</th>
-                      <th>Opciones</th>
+                      <th style="width:40%">Nombre</th>
+                      <th style="width:40%">E-mail</th>
+                      <th style="width:10%">Rol</th>
+                      <th style="width:10%">Opciones</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -39,11 +41,12 @@
                                     
                       <td v-text="usuario.name"></td>
                       <td v-text="usuario.email"></td>
-                      <td v-text="usuario.rol"></td>
+                      <td v-if="usuario.rol == 1">Administrador</td>
+                      <td v-if="usuario.rol == 2">Vendedor</td>
                       <td>
                       <!--botton actulizar que manda 3 parametros al la funcion -->
                       <button type="button" @click="abrirModal('editar',usuario)" class="btn btn-warning btn-sm">
-                          <i class="icon-pencil"></i>
+                         <i class="fas fa-user-edit"></i>
                       </button> &nbsp;
                       <button type="button" class="btn btn-danger btn-sm" @click="eliminar(usuario.id)">
                           <i class="fas fa-trash-alt"></i>
@@ -53,23 +56,108 @@
                   </tbody>
                   <br>
                   <nav>
-                            <ul class="pagination">
-                                <li class="page-item" v-if="pagination.current_page > 1">
-                                    <a class="page-link" href="#" @click.prevent="cambiarPagina(pagination.current_page - 1,buscar,filtro)">Ant</a>
-                                </li>
-                                <li class="page-item" v-for="page in pagesNumber" :key="page" :class="[page == isActived ? 'active' : '']">
-                                    <a class="page-link" href="#" @click.prevent="cambiarPagina(page,buscar,filtro)" v-text="page"></a>
-                                </li>
-                                <li class="page-item" v-if="pagination.current_page < pagination.last_page">
-                                    <a class="page-link" href="#" @click.prevent="cambiarPagina(pagination.current_page + 1,buscar,filtro)">Sig</a>
-                                </li>
-                            </ul>
+                    <ul class="pagination">
+                        <li class="page-item" v-if="pagination.current_page > 1">
+                            <a class="page-link" href="#" @click.prevent="cambiarPagina(pagination.current_page - 1,buscar,filtro)">Ant</a>
+                        </li>
+                        <li class="page-item" v-for="page in pagesNumber" :key="page" :class="[page == isActived ? 'active' : '']">
+                            <a class="page-link" href="#" @click.prevent="cambiarPagina(page,buscar,filtro)" v-text="page"></a>
+                        </li>
+                        <li class="page-item" v-if="pagination.current_page < pagination.last_page">
+                            <a class="page-link" href="#" @click.prevent="cambiarPagina(pagination.current_page + 1,buscar,filtro)">Sig</a>
+                        </li>
+                    </ul>
                   </nav>
                 </table>
                 
               </div>
             </div>
           </div>
+
+          <!--inicio del modal-->
+           <b-modal
+            v-model="show">
+            <template slot="modal-header">
+              <!-- Emulate built in modal header close button action -->
+              
+              <h5>{{titutloModal}}</h5>
+               <button type="button" class="close" @click="cerrarModal()" aria-label="Close">
+                           <span aria-hidden="true">×</span>
+                </button>
+            </template>
+            
+          <b-container fluid>
+            <div>
+              <b-form>
+                
+                <b-form-group label="Nombre:">
+                  <b-form-input
+                    type="text"
+                    required
+                    placeholder="Escribe el nombre"
+                    v-model="nombre">
+                  </b-form-input>
+                </b-form-group>
+
+                <b-form-group label="Correo electronico:">
+                  <b-form-input
+                    type="email"
+                    required
+                    placeholder="Escribe el correo"
+                    v-model="email">
+                  </b-form-input>
+                </b-form-group>
+
+                <b-form-group label="Contraseña:">
+                  <b-form-input
+                  type="text"
+                  required
+                  placeholder="Escribe la contraseña"
+                  v-model="clave1">
+                  </b-form-input>
+                </b-form-group>
+
+                  
+                <b-form-group label="Confirmar contraseña:">
+                  <b-form-input
+                    type="text"
+                    required
+                    placeholder="Escribe la confimacion de la contraseña"
+                    v-model="clave2"
+                  ></b-form-input>
+                </b-form-group>
+
+                <b-form-group id="input-group-3" label="Rol:" label-for="input-3">
+                  <select v-model="rol" class="form-control">
+                    <option value="1">Administrador</option>
+                    <option value="2">Vendedor</option>
+                  </select>
+                </b-form-group>
+
+                
+              </b-form>
+            </div>
+          </b-container>
+
+            <div slot="modal-footer" class="w-100">
+             <b-button
+                variant="primary"
+                class="float-right ml-2"
+                @click="agregar"
+              >Agrear
+              <i class="fas fa-plus-circle"></i>
+              </b-button>
+              <b-button
+                variant="danger"
+                class="float-right"
+                @click="cerrarModal()"
+              >
+              Cerrar
+              <i class="fas fa-times-circle"></i>
+              </b-button>
+            </div>
+
+          </b-modal>
 </div>
 </template>
 
@@ -81,8 +169,10 @@ export default {
       buscar : '',
       nombre : '',
       email : '',
+      rol : 2,
       id : 0,
-      clave : '',
+      clave1 : '',
+      clave2 : '',
       pagination : {
                 'total': 0,
                 'current_page' : 0,
@@ -92,7 +182,10 @@ export default {
                 'to' : 0,
                 },
       offset : 3,
-      arrayUsuarios:[]
+      arrayUsuarios:[],
+      titutloModal: '',
+      //propiedades del modal
+      show : false,
     }
   },
   computed:{
@@ -125,7 +218,6 @@ export default {
   },
   methods: {
       listar(page,buscar,filtro){
-          alert("buscado");
           let t=this;
           //enviar los paramtros recividos de la vista hacia el controlador
           var url= '/usuarios?page=' + page + '&_buscar='+ buscar + '&_filtro='+ filtro;
@@ -138,6 +230,26 @@ export default {
               console.log(error);
           });
     },
+    agregar(){
+        let me = this;
+
+        const params = {
+                email : this.email,
+                nombre : this.nombre,
+                clave1 : this.clave1,
+                rol : this.rol
+        };
+
+        axios.post('/usuarios/agregar',params)
+        .then(function (response) {
+            console.log(response.data);
+            me.cerrarModal();
+            alert("agregado con exito");
+            me.listar(1,'','name');
+        }).catch(function (error) {
+            console.log(error);
+        });
+    },
     cambiarPagina(page,buscar,filtro){
                 let me = this;
                 //Actualiza la página actual
@@ -145,6 +257,25 @@ export default {
                 //Envia la petición para visualizar la data de esa página
                 me.listar(page,buscar,filtro);
     },
+    abrirModal(modo){
+        this.show = true;
+        if(modo == 'agregar')
+        {
+          this.titutloModal = 'AGREGAR USUARIO';
+        }
+        else
+        {
+          this.titutloModal= 'EDITAR USUARIO';
+        }
+    },
+    cerrarModal(){
+        this.show = false;
+        this.nombre = '';
+        this.clave1 = '';
+        this.clave2 = '';
+        this.email = '';
+        this.rol = 2;
+    }
   }, 
   mounted() {
         this.listar(1,this.buscar,this.filtro);
