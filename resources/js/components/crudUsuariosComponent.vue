@@ -89,42 +89,34 @@
           <b-container fluid>
             <div>
               <b-form>
-                
+              
                 <b-form-group label="Nombre:">
-                  <b-form-input
-                    type="text"
-                    required
-                    placeholder="Escribe el nombre"
-                    v-model="nombre">
-                  </b-form-input>
+                  <b-input type="text" v-model="nombre" :state="!nombreVacio" id="feedback-user"></b-input>
+                  <b-form-invalid-feedback :state="nombreVacio">
+                    Por favor escribe el nombre del usuario.
+                  </b-form-invalid-feedback>
                 </b-form-group>
 
                 <b-form-group label="Correo electronico:">
-                  <b-form-input
-                    type="email"
-                    required
-                    placeholder="Escribe el correo"
-                    v-model="email">
-                  </b-form-input>
+                  <b-input type="email" v-model="email" :state="!emailVacio" id="feedback-user"></b-input>
+                  <b-form-invalid-feedback :state="emailVacio">
+                    Por favor escribe un correo electronico.
+                  </b-form-invalid-feedback>
                 </b-form-group>
 
                 <b-form-group label="Contraseña:">
-                  <b-form-input
-                  type="text"
-                  required
-                  placeholder="Escribe la contraseña"
-                  v-model="clave1">
-                  </b-form-input>
+                  <b-input type="password" v-model="clave1" :state="!clave1Vacio" id="feedback-user"></b-input>
+                  <b-form-invalid-feedback :state="clave1Vacio">
+                    Por favor escribe una contraseña.
+                  </b-form-invalid-feedback>
                 </b-form-group>
 
                   
-                <b-form-group label="Confirmar contraseña:">
-                  <b-form-input
-                    type="text"
-                    required
-                    placeholder="Escribe la confimacion de la contraseña"
-                    v-model="clave2"
-                  ></b-form-input>
+                 <b-form-group label="Contraseña:">
+                  <b-input type="password" v-model="clave2" :state="!clave2Vacio" id="feedback-user"></b-input>
+                  <b-form-invalid-feedback :state="clave2Vacio">
+                    Por favor escribe la confimacion de tu contraseña.
+                  </b-form-invalid-feedback>
                 </b-form-group>
 
                 <b-form-group id="input-group-3" label="Rol:" label-for="input-3">
@@ -162,9 +154,16 @@
 </template>
 
 <script>
+import Swal from 'sweetalert2'
 export default {
   data() {
     return {
+      //campos vacios
+      nombreVacio : true,
+      emailVacio : true,
+      clave1Vacio : true,
+      clave2Vacio : true,
+      //fin comapos vacios
       filtro : 'name',
       buscar : '',
       nombre : '',
@@ -214,7 +213,7 @@ export default {
                   from++;
               }
               return pagesArray;             
-        }
+        },
   },
   methods: {
       listar(page,buscar,filtro){
@@ -244,11 +243,27 @@ export default {
         .then(function (response) {
             console.log(response.data);
             me.cerrarModal();
-            alert("agregado con exito");
+            me.msjAgregar();
             me.listar(1,'','name');
         }).catch(function (error) {
             console.log(error);
         });
+    },
+    msjAgregar(){
+      Swal.fire({
+        type: 'success',
+        title: 'Registro agregado con exito!',
+        showConfirmButton: false,
+        timer: 1500
+      })
+    },
+    msjEditar(){
+      Swal.fire({
+        type: 'success',
+        title: 'Registro actualizado con exito!',
+        showConfirmButton: false,
+        timer: 1500
+      })
     },
     cambiarPagina(page,buscar,filtro){
                 let me = this;

@@ -1796,6 +1796,8 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+/* harmony import */ var sweetalert2__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! sweetalert2 */ "./node_modules/sweetalert2/dist/sweetalert2.all.js");
+/* harmony import */ var sweetalert2__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(sweetalert2__WEBPACK_IMPORTED_MODULE_0__);
 //
 //
 //
@@ -1951,17 +1953,16 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
+
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
+      //campos vacios
+      nombreVacio: true,
+      emailVacio: true,
+      clave1Vacio: true,
+      clave2Vacio: true,
+      //fin comapos vacios
       filtro: 'name',
       buscar: '',
       nombre: '',
@@ -2041,10 +2042,26 @@ __webpack_require__.r(__webpack_exports__);
       axios.post('/usuarios/agregar', params).then(function (response) {
         console.log(response.data);
         me.cerrarModal();
-        alert("agregado con exito");
+        me.msjAgregar();
         me.listar(1, '', 'name');
       })["catch"](function (error) {
         console.log(error);
+      });
+    },
+    msjAgregar: function msjAgregar() {
+      sweetalert2__WEBPACK_IMPORTED_MODULE_0___default.a.fire({
+        type: 'success',
+        title: 'Registro agregado con exito!',
+        showConfirmButton: false,
+        timer: 1500
+      });
+    },
+    msjEditar: function msjEditar() {
+      sweetalert2__WEBPACK_IMPORTED_MODULE_0___default.a.fire({
+        type: 'success',
+        title: 'Registro actualizado con exito!',
+        showConfirmButton: false,
+        timer: 1500
       });
     },
     cambiarPagina: function cambiarPagina(page, buscar, filtro) {
@@ -70701,11 +70718,11 @@ var render = function() {
                       "b-form-group",
                       { attrs: { label: "Nombre:" } },
                       [
-                        _c("b-form-input", {
+                        _c("b-input", {
                           attrs: {
                             type: "text",
-                            required: "",
-                            placeholder: "Escribe el nombre"
+                            state: !_vm.nombreVacio,
+                            id: "feedback-user"
                           },
                           model: {
                             value: _vm.nombre,
@@ -70714,7 +70731,17 @@ var render = function() {
                             },
                             expression: "nombre"
                           }
-                        })
+                        }),
+                        _vm._v(" "),
+                        _c(
+                          "b-form-invalid-feedback",
+                          { attrs: { state: _vm.nombreVacio } },
+                          [
+                            _vm._v(
+                              "\r\n                    Por favor escribe el nombre del usuario.\r\n                  "
+                            )
+                          ]
+                        )
                       ],
                       1
                     ),
@@ -70723,11 +70750,11 @@ var render = function() {
                       "b-form-group",
                       { attrs: { label: "Correo electronico:" } },
                       [
-                        _c("b-form-input", {
+                        _c("b-input", {
                           attrs: {
                             type: "email",
-                            required: "",
-                            placeholder: "Escribe el correo"
+                            state: !_vm.emailVacio,
+                            id: "feedback-user"
                           },
                           model: {
                             value: _vm.email,
@@ -70736,7 +70763,17 @@ var render = function() {
                             },
                             expression: "email"
                           }
-                        })
+                        }),
+                        _vm._v(" "),
+                        _c(
+                          "b-form-invalid-feedback",
+                          { attrs: { state: _vm.emailVacio } },
+                          [
+                            _vm._v(
+                              "\r\n                    Por favor escribe un correo electronico.\r\n                  "
+                            )
+                          ]
+                        )
                       ],
                       1
                     ),
@@ -70745,11 +70782,11 @@ var render = function() {
                       "b-form-group",
                       { attrs: { label: "Contraseña:" } },
                       [
-                        _c("b-form-input", {
+                        _c("b-input", {
                           attrs: {
-                            type: "text",
-                            required: "",
-                            placeholder: "Escribe la contraseña"
+                            type: "password",
+                            state: !_vm.clave1Vacio,
+                            id: "feedback-user"
                           },
                           model: {
                             value: _vm.clave1,
@@ -70758,21 +70795,30 @@ var render = function() {
                             },
                             expression: "clave1"
                           }
-                        })
+                        }),
+                        _vm._v(" "),
+                        _c(
+                          "b-form-invalid-feedback",
+                          { attrs: { state: _vm.clave1Vacio } },
+                          [
+                            _vm._v(
+                              "\r\n                    Por favor escribe una contraseña.\r\n                  "
+                            )
+                          ]
+                        )
                       ],
                       1
                     ),
                     _vm._v(" "),
                     _c(
                       "b-form-group",
-                      { attrs: { label: "Confirmar contraseña:" } },
+                      { attrs: { label: "Contraseña:" } },
                       [
-                        _c("b-form-input", {
+                        _c("b-input", {
                           attrs: {
-                            type: "text",
-                            required: "",
-                            placeholder:
-                              "Escribe la confimacion de la contraseña"
+                            type: "password",
+                            state: !_vm.clave2Vacio,
+                            id: "feedback-user"
                           },
                           model: {
                             value: _vm.clave2,
@@ -70781,7 +70827,17 @@ var render = function() {
                             },
                             expression: "clave2"
                           }
-                        })
+                        }),
+                        _vm._v(" "),
+                        _c(
+                          "b-form-invalid-feedback",
+                          { attrs: { state: _vm.clave2Vacio } },
+                          [
+                            _vm._v(
+                              "\r\n                    Por favor escribe la confimacion de tu contraseña.\r\n                  "
+                            )
+                          ]
+                        )
                       ],
                       1
                     ),
@@ -83306,18 +83362,14 @@ module.exports = function(module) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var sweetalert2__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! sweetalert2 */ "./node_modules/sweetalert2/dist/sweetalert2.all.js");
-/* harmony import */ var sweetalert2__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(sweetalert2__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.common.js");
-/* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(vue__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var bootstrap_vue__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! bootstrap-vue */ "./node_modules/bootstrap-vue/es/index.js");
-/* harmony import */ var bootstrap_vue__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(bootstrap_vue__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var bootstrap_dist_css_bootstrap_css__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! bootstrap/dist/css/bootstrap.css */ "./node_modules/bootstrap/dist/css/bootstrap.css");
-/* harmony import */ var bootstrap_dist_css_bootstrap_css__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(bootstrap_dist_css_bootstrap_css__WEBPACK_IMPORTED_MODULE_3__);
-/* harmony import */ var bootstrap_vue_dist_bootstrap_vue_css__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! bootstrap-vue/dist/bootstrap-vue.css */ "./node_modules/bootstrap-vue/dist/bootstrap-vue.css");
-/* harmony import */ var bootstrap_vue_dist_bootstrap_vue_css__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(bootstrap_vue_dist_bootstrap_vue_css__WEBPACK_IMPORTED_MODULE_4__);
-/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
-/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_5__);
+/* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.common.js");
+/* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(vue__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var bootstrap_vue__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! bootstrap-vue */ "./node_modules/bootstrap-vue/es/index.js");
+/* harmony import */ var bootstrap_vue__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(bootstrap_vue__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var bootstrap_dist_css_bootstrap_css__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! bootstrap/dist/css/bootstrap.css */ "./node_modules/bootstrap/dist/css/bootstrap.css");
+/* harmony import */ var bootstrap_dist_css_bootstrap_css__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(bootstrap_dist_css_bootstrap_css__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var bootstrap_vue_dist_bootstrap_vue_css__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! bootstrap-vue/dist/bootstrap-vue.css */ "./node_modules/bootstrap-vue/dist/bootstrap-vue.css");
+/* harmony import */ var bootstrap_vue_dist_bootstrap_vue_css__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(bootstrap_vue_dist_bootstrap_vue_css__WEBPACK_IMPORTED_MODULE_3__);
 /**
  * First we will load all of this project's JavaScript dependencies which
  * includes Vue and other libraries. It is a great starting point when
@@ -83329,30 +83381,12 @@ __webpack_require__(/*! ./bootstrap */ "./resources/js/bootstrap.js");
 
 
 
-
-
-vue__WEBPACK_IMPORTED_MODULE_1___default.a.use(bootstrap_vue__WEBPACK_IMPORTED_MODULE_2___default.a);
-/**
- * The following block of code may be used to automatically register your
- * Vue components. It will recursively scan this directory for the Vue
- * components and automatically register them with their "basename".
- *
- * Eg. ./components/ExampleComponent.vue -> <example-component></example-component>
- */
-// const files = require.context('./', true, /\.vue$/i);
-// files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(key).default));
-
-vue__WEBPACK_IMPORTED_MODULE_1___default.a.component('example-component', __webpack_require__(/*! ./components/ExampleComponent.vue */ "./resources/js/components/ExampleComponent.vue")["default"]);
-vue__WEBPACK_IMPORTED_MODULE_1___default.a.component('principal-component', __webpack_require__(/*! ./components/principalComponent.vue */ "./resources/js/components/principalComponent.vue")["default"]);
-vue__WEBPACK_IMPORTED_MODULE_1___default.a.component('crud-usuarios-component', __webpack_require__(/*! ./components/crudUsuariosComponent.vue */ "./resources/js/components/crudUsuariosComponent.vue")["default"]);
-vue__WEBPACK_IMPORTED_MODULE_1___default.a.component('crud-productos-component', __webpack_require__(/*! ./components/crudProductosComponent.vue */ "./resources/js/components/crudProductosComponent.vue")["default"]);
-/**
- * Next, we will create a fresh Vue application instance and attach it to
- * the page. Then, you may begin adding components to this application
- * or customize the JavaScript scaffolding to fit your unique needs.
- */
-
-var app = new vue__WEBPACK_IMPORTED_MODULE_1___default.a({
+vue__WEBPACK_IMPORTED_MODULE_0___default.a.use(bootstrap_vue__WEBPACK_IMPORTED_MODULE_1___default.a);
+vue__WEBPACK_IMPORTED_MODULE_0___default.a.component('example-component', __webpack_require__(/*! ./components/ExampleComponent.vue */ "./resources/js/components/ExampleComponent.vue")["default"]);
+vue__WEBPACK_IMPORTED_MODULE_0___default.a.component('principal-component', __webpack_require__(/*! ./components/principalComponent.vue */ "./resources/js/components/principalComponent.vue")["default"]);
+vue__WEBPACK_IMPORTED_MODULE_0___default.a.component('crud-usuarios-component', __webpack_require__(/*! ./components/crudUsuariosComponent.vue */ "./resources/js/components/crudUsuariosComponent.vue")["default"]);
+vue__WEBPACK_IMPORTED_MODULE_0___default.a.component('crud-productos-component', __webpack_require__(/*! ./components/crudProductosComponent.vue */ "./resources/js/components/crudProductosComponent.vue")["default"]);
+var app = new vue__WEBPACK_IMPORTED_MODULE_0___default.a({
   el: '#app',
   data: function data() {
     return {
