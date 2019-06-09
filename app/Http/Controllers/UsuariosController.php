@@ -40,4 +40,24 @@ class UsuariosController extends Controller
                         
         Usuario::agregarUsuarioM($array);
     }
+    
+    protected static function comprobarEmail(Request $request)
+    {
+        if (!$request->ajax()) return redirect('/');
+        
+        $res = Usuario::comprobarEmailM($request->email);
+        
+        if(!$res)
+            return response()->json(false);
+        else
+            return response()->json(true); 
+    }
+
+    protected static function eliminarUsuario(Request $request)
+    {
+        $id = $request->id;    
+        Usuario::eliminarUsuarioM($id);
+    }
+
+    
 }

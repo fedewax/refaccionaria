@@ -1953,6 +1953,23 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
@@ -1963,6 +1980,10 @@ __webpack_require__.r(__webpack_exports__);
       clave1Vacio: true,
       clave2Vacio: true,
       //fin comapos vacios
+      //validaciones email.
+      errorEmail: false,
+      emailRegistrado: false,
+      //fin falidaciones email.
       filtro: 'name',
       buscar: '',
       nombre: '',
@@ -2032,6 +2053,19 @@ __webpack_require__.r(__webpack_exports__);
       });
     },
     agregar: function agregar() {
+      this.comprobarEmail();
+
+      if (!this.nombre || !this.email || !this.clave1 || !this.clave2) {
+        this.msjCamposVacios();
+        return;
+      }
+
+      if (!this.validEmail()) {
+        this.errorEmail = true;
+        return;
+      }
+
+      if (this.emailRegistrado) return;
       var me = this;
       var params = {
         email: this.email,
@@ -2040,12 +2074,39 @@ __webpack_require__.r(__webpack_exports__);
         rol: this.rol
       };
       axios.post('/usuarios/agregar', params).then(function (response) {
-        console.log(response.data);
         me.cerrarModal();
         me.msjAgregar();
         me.listar(1, '', 'name');
       })["catch"](function (error) {
         console.log(error);
+      });
+    },
+    eliminar: function eliminar(id) {
+      var _this = this;
+
+      sweetalert2__WEBPACK_IMPORTED_MODULE_0___default.a.fire({
+        title: '¿Estas seguro?',
+        text: "Estas apunto de borrar este usuario!",
+        type: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Si, borrar usuario!',
+        cancelButtonText: 'Cancelar'
+      }).then(function (result) {
+        var me = _this;
+        var params = {
+          id: id
+        };
+        axios.post('/usuarios/eliminar', params).then(function (response) {
+          if (result.value) {
+            sweetalert2__WEBPACK_IMPORTED_MODULE_0___default.a.fire('Exito!', 'Usuario borrado!');
+          }
+
+          me.listar(1, '', 'name');
+        })["catch"](function (error) {
+          console.log(error);
+        });
       });
     },
     msjAgregar: function msjAgregar() {
@@ -2062,6 +2123,13 @@ __webpack_require__.r(__webpack_exports__);
         title: 'Registro actualizado con exito!',
         showConfirmButton: false,
         timer: 1500
+      });
+    },
+    msjCamposVacios: function msjCamposVacios() {
+      sweetalert2__WEBPACK_IMPORTED_MODULE_0___default.a.fire({
+        type: 'error',
+        title: 'Oops...',
+        text: 'Complete todos los campos!'
       });
     },
     cambiarPagina: function cambiarPagina(page, buscar, filtro) {
@@ -2087,6 +2155,50 @@ __webpack_require__.r(__webpack_exports__);
       this.clave2 = '';
       this.email = '';
       this.rol = 2;
+    },
+    validarCamposVacios: function validarCamposVacios() {
+      if (!this.nombre) {
+        this.nombreVacio = true;
+      } else {
+        this.nombreVacio = false;
+      }
+
+      if (!this.email) {
+        this.emailVacio = true;
+      } else {
+        this.emailVacio = false;
+      }
+
+      if (!this.clave1) {
+        this.clave1Vacio = true;
+      } else {
+        this.clave1Vacio = false;
+      }
+
+      if (!this.clave2) {
+        this.clave2Vacio = true;
+      } else {
+        this.clave2Vacio = false;
+      } //arreglar el bug usando evento key up para validar que el email no este vacio...
+
+    },
+    validEmail: function validEmail() {
+      var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+      return re.test(this.email);
+    },
+    keyUpEmail: function keyUpEmail() {
+      this.validarCamposVacios();
+      this.comprobarEmail();
+    },
+    comprobarEmail: function comprobarEmail() {
+      var me = this;
+      var url = '/usuarios/comprobarEmail?email=' + this.email;
+      axios.get(url).then(function (response) {
+        var respuesta = response.data;
+        me.emailRegistrado = respuesta;
+      })["catch"](function (error) {
+        console.log(error);
+      });
     }
   },
   mounted: function mounted() {
@@ -70716,13 +70828,18 @@ var render = function() {
                   [
                     _c(
                       "b-form-group",
-                      { attrs: { label: "Nombre:" } },
+                      { staticClass: "mb-0 mt-0", attrs: { label: "Nombre:" } },
                       [
                         _c("b-input", {
                           attrs: {
                             type: "text",
                             state: !_vm.nombreVacio,
-                            id: "feedback-user"
+                            autocomplete: "off"
+                          },
+                          on: {
+                            keyup: function($event) {
+                              return _vm.validarCamposVacios()
+                            }
                           },
                           model: {
                             value: _vm.nombre,
@@ -70733,28 +70850,34 @@ var render = function() {
                           }
                         }),
                         _vm._v(" "),
-                        _c(
-                          "b-form-invalid-feedback",
-                          { attrs: { state: _vm.nombreVacio } },
-                          [
-                            _vm._v(
-                              "\r\n                    Por favor escribe el nombre del usuario.\r\n                  "
-                            )
-                          ]
-                        )
+                        _c("b-form-invalid-feedback", [
+                          _vm._v(
+                            "\r\n                    Por favor escribe el nombre del usuario.\r\n                  "
+                          )
+                        ]),
+                        _vm._v(" "),
+                        _c("hr")
                       ],
                       1
                     ),
                     _vm._v(" "),
                     _c(
                       "b-form-group",
-                      { attrs: { label: "Correo electronico:" } },
+                      {
+                        staticClass: "mb-0 mt-0",
+                        attrs: { label: "Correo electronico:" }
+                      },
                       [
-                        _c("b-input", {
+                        _c("b-form-input", {
                           attrs: {
                             type: "email",
                             state: !_vm.emailVacio,
-                            id: "feedback-user"
+                            autocomplete: "off"
+                          },
+                          on: {
+                            keyup: function($event) {
+                              return _vm.keyUpEmail()
+                            }
                           },
                           model: {
                             value: _vm.email,
@@ -70765,91 +70888,170 @@ var render = function() {
                           }
                         }),
                         _vm._v(" "),
+                        _c("b-form-invalid-feedback", [
+                          _vm._v(
+                            "\r\n                    Por favor escribe un correo electronico.\r\n                  "
+                          )
+                        ]),
+                        _vm._v(" "),
                         _c(
-                          "b-form-invalid-feedback",
-                          { attrs: { state: _vm.emailVacio } },
+                          "div",
+                          {
+                            directives: [
+                              {
+                                name: "show",
+                                rawName: "v-show",
+                                value: _vm.errorEmail,
+                                expression: "errorEmail"
+                              }
+                            ]
+                          },
                           [
-                            _vm._v(
-                              "\r\n                    Por favor escribe un correo electronico.\r\n                  "
-                            )
+                            _c("p", { staticStyle: { color: "red" } }, [
+                              _vm._v("Por favor escriba un correo valido.")
+                            ])
                           ]
-                        )
+                        ),
+                        _vm._v(" "),
+                        _c(
+                          "div",
+                          {
+                            directives: [
+                              {
+                                name: "show",
+                                rawName: "v-show",
+                                value: _vm.emailRegistrado,
+                                expression: "emailRegistrado"
+                              }
+                            ]
+                          },
+                          [
+                            _c("p", { staticStyle: { color: "red" } }, [
+                              _vm._v(
+                                "Lo sentimos este correo electronico ya esta registrado."
+                              )
+                            ])
+                          ]
+                        ),
+                        _vm._v(" "),
+                        _c("hr")
                       ],
                       1
                     ),
                     _vm._v(" "),
                     _c(
-                      "b-form-group",
-                      { attrs: { label: "Contraseña:" } },
+                      "b-row",
                       [
-                        _c("b-input", {
-                          attrs: {
-                            type: "password",
-                            state: !_vm.clave1Vacio,
-                            id: "feedback-user"
-                          },
-                          model: {
-                            value: _vm.clave1,
-                            callback: function($$v) {
-                              _vm.clave1 = $$v
-                            },
-                            expression: "clave1"
-                          }
-                        }),
+                        _c(
+                          "b-col",
+                          { attrs: { lg: "6" } },
+                          [
+                            _c(
+                              "b-input-group",
+                              [
+                                _c(
+                                  "b-form-group",
+                                  {
+                                    staticClass: "mb-0 mt-0",
+                                    attrs: { label: "Contraseña:" }
+                                  },
+                                  [
+                                    _c("b-input", {
+                                      attrs: {
+                                        type: "password",
+                                        state: !_vm.clave1Vacio,
+                                        autocomplete: "off"
+                                      },
+                                      on: {
+                                        keyup: function($event) {
+                                          return _vm.validarCamposVacios()
+                                        }
+                                      },
+                                      model: {
+                                        value: _vm.clave1,
+                                        callback: function($$v) {
+                                          _vm.clave1 = $$v
+                                        },
+                                        expression: "clave1"
+                                      }
+                                    }),
+                                    _vm._v(" "),
+                                    _c("b-form-invalid-feedback", [
+                                      _vm._v(
+                                        "\r\n                          Por favor escribe una contraseña.\r\n                        "
+                                      )
+                                    ])
+                                  ],
+                                  1
+                                )
+                              ],
+                              1
+                            )
+                          ],
+                          1
+                        ),
                         _vm._v(" "),
                         _c(
-                          "b-form-invalid-feedback",
-                          { attrs: { state: _vm.clave1Vacio } },
+                          "b-col",
+                          { attrs: { lg: "6" } },
                           [
-                            _vm._v(
-                              "\r\n                    Por favor escribe una contraseña.\r\n                  "
+                            _c(
+                              "b-input-group",
+                              [
+                                _c(
+                                  "b-form-group",
+                                  {
+                                    staticClass: "mb-0 mt-0",
+                                    attrs: {
+                                      label: "Contraseña de confirmacion:"
+                                    }
+                                  },
+                                  [
+                                    _c("b-input", {
+                                      attrs: {
+                                        type: "password",
+                                        state: !_vm.clave2Vacio,
+                                        autocomplete: "off"
+                                      },
+                                      on: {
+                                        keyup: function($event) {
+                                          return _vm.validarCamposVacios()
+                                        }
+                                      },
+                                      model: {
+                                        value: _vm.clave2,
+                                        callback: function($$v) {
+                                          _vm.clave2 = $$v
+                                        },
+                                        expression: "clave2"
+                                      }
+                                    }),
+                                    _vm._v(" "),
+                                    _c("b-form-invalid-feedback", [
+                                      _vm._v(
+                                        "\r\n                          Por favor escribe la contraseña de confirmación.\r\n                        "
+                                      )
+                                    ])
+                                  ],
+                                  1
+                                )
+                              ],
+                              1
                             )
-                          ]
+                          ],
+                          1
                         )
                       ],
                       1
                     ),
                     _vm._v(" "),
-                    _c(
-                      "b-form-group",
-                      { attrs: { label: "Contraseña:" } },
-                      [
-                        _c("b-input", {
-                          attrs: {
-                            type: "password",
-                            state: !_vm.clave2Vacio,
-                            id: "feedback-user"
-                          },
-                          model: {
-                            value: _vm.clave2,
-                            callback: function($$v) {
-                              _vm.clave2 = $$v
-                            },
-                            expression: "clave2"
-                          }
-                        }),
-                        _vm._v(" "),
-                        _c(
-                          "b-form-invalid-feedback",
-                          { attrs: { state: _vm.clave2Vacio } },
-                          [
-                            _vm._v(
-                              "\r\n                    Por favor escribe la confimacion de tu contraseña.\r\n                  "
-                            )
-                          ]
-                        )
-                      ],
-                      1
-                    ),
+                    _c("hr"),
                     _vm._v(" "),
                     _c(
                       "b-form-group",
                       {
-                        attrs: {
-                          id: "input-group-3",
-                          label: "Rol:",
-                          "label-for": "input-3"
-                        }
+                        staticClass: "mb-0 mt-0",
+                        attrs: { label: "Rol:", "label-for": "input-3" }
                       },
                       [
                         _c(
@@ -70954,13 +71156,13 @@ var staticRenderFns = [
     var _c = _vm._self._c || _h
     return _c("thead", [
       _c("tr", [
-        _c("th", { staticStyle: { width: "40%" } }, [_vm._v("Nombre")]),
+        _c("th", { staticStyle: { width: "35%" } }, [_vm._v("Nombre")]),
         _vm._v(" "),
         _c("th", { staticStyle: { width: "40%" } }, [_vm._v("E-mail")]),
         _vm._v(" "),
         _c("th", { staticStyle: { width: "10%" } }, [_vm._v("Rol")]),
         _vm._v(" "),
-        _c("th", { staticStyle: { width: "10%" } }, [_vm._v("Opciones")])
+        _c("th", { staticStyle: { width: "15%" } }, [_vm._v("Opciones")])
       ])
     ])
   }

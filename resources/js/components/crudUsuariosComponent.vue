@@ -30,10 +30,10 @@
                 <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                   <thead>
                     <tr>
-                      <th style="width:40%">Nombre</th>
+                      <th style="width:35%">Nombre</th>
                       <th style="width:40%">E-mail</th>
                       <th style="width:10%">Rol</th>
-                      <th style="width:10%">Opciones</th>
+                      <th style="width:15%">Opciones</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -75,58 +75,75 @@
           </div>
 
           <!--inicio del modal-->
-           <b-modal
-            v-model="show">
-            <template slot="modal-header">
+           <b-modal v-model="show">
+            <template  slot="modal-header">
               <!-- Emulate built in modal header close button action -->
               
-              <h5>{{titutloModal}}</h5>
+               <h5>{{titutloModal}}</h5>
                <button type="button" class="close" @click="cerrarModal()" aria-label="Close">
                            <span aria-hidden="true">×</span>
                 </button>
+                
             </template>
             
           <b-container fluid>
             <div>
               <b-form>
               
-                <b-form-group label="Nombre:">
-                  <b-input type="text" v-model="nombre" :state="!nombreVacio" id="feedback-user"></b-input>
-                  <b-form-invalid-feedback :state="nombreVacio">
+                <b-form-group class="mb-0 mt-0" label="Nombre:">
+                  <b-input type="text" v-model="nombre" @keyup="validarCamposVacios()" :state="!nombreVacio" autocomplete="off"></b-input>
+                  <b-form-invalid-feedback >
                     Por favor escribe el nombre del usuario.
                   </b-form-invalid-feedback>
+                  <hr>
                 </b-form-group>
-
-                <b-form-group label="Correo electronico:">
-                  <b-input type="email" v-model="email" :state="!emailVacio" id="feedback-user"></b-input>
-                  <b-form-invalid-feedback :state="emailVacio">
+                
+                <b-form-group  class="mb-0 mt-0" label="Correo electronico:">
+                  <b-form-input type="email" v-model="email" @keyup="keyUpEmail()" :state="!emailVacio" autocomplete="off" ></b-form-input>
+                  <b-form-invalid-feedback>
                     Por favor escribe un correo electronico.
                   </b-form-invalid-feedback>
+                  <div v-show="errorEmail">
+                        <p style="color:red;">Por favor escriba un correo valido.</p>
+                  </div>
+                   <div v-show="emailRegistrado">
+                        <p style="color:red;">Lo sentimos este correo electronico ya esta registrado.</p>
+                  </div>
+                  <hr>
                 </b-form-group>
+                
+                <b-row>
+                  <b-col lg="6">
+                    <b-input-group>
+                      <b-form-group class="mb-0 mt-0" label="Contraseña:">
+                        <b-input type="password" v-model="clave1" @keyup="validarCamposVacios()" :state="!clave1Vacio" autocomplete="off"></b-input>
+                        <b-form-invalid-feedback>
+                          Por favor escribe una contraseña.
+                        </b-form-invalid-feedback>
+                       </b-form-group>
+                    </b-input-group>
+                  </b-col>
 
-                <b-form-group label="Contraseña:">
-                  <b-input type="password" v-model="clave1" :state="!clave1Vacio" id="feedback-user"></b-input>
-                  <b-form-invalid-feedback :state="clave1Vacio">
-                    Por favor escribe una contraseña.
-                  </b-form-invalid-feedback>
-                </b-form-group>
-
-                  
-                 <b-form-group label="Contraseña:">
-                  <b-input type="password" v-model="clave2" :state="!clave2Vacio" id="feedback-user"></b-input>
-                  <b-form-invalid-feedback :state="clave2Vacio">
-                    Por favor escribe la confimacion de tu contraseña.
-                  </b-form-invalid-feedback>
-                </b-form-group>
-
-                <b-form-group id="input-group-3" label="Rol:" label-for="input-3">
+                  <b-col lg="6">
+                    <b-input-group>
+                      <b-form-group class="mb-0 mt-0" label="Contraseña de confirmacion:">
+                        <b-input type="password" v-model="clave2" @keyup="validarCamposVacios()" :state="!clave2Vacio" autocomplete="off"></b-input>
+                        <b-form-invalid-feedback>
+                          Por favor escribe la contraseña de confirmación.
+                        </b-form-invalid-feedback>
+                      </b-form-group>
+                    </b-input-group>
+                  </b-col>
+                </b-row>
+                <hr>
+              
+                <b-form-group class="mb-0 mt-0" label="Rol:" label-for="input-3">
                   <select v-model="rol" class="form-control">
                     <option value="1">Administrador</option>
                     <option value="2">Vendedor</option>
                   </select>
                 </b-form-group>
 
-                
               </b-form>
             </div>
           </b-container>
@@ -164,6 +181,10 @@ export default {
       clave1Vacio : true,
       clave2Vacio : true,
       //fin comapos vacios
+      //validaciones email.
+      errorEmail : false,
+      emailRegistrado : false,
+      //fin falidaciones email.
       filtro : 'name',
       buscar : '',
       nombre : '',
@@ -216,7 +237,7 @@ export default {
         },
   },
   methods: {
-      listar(page,buscar,filtro){
+    listar(page,buscar,filtro){
           let t=this;
           //enviar los paramtros recividos de la vista hacia el controlador
           var url= '/usuarios?page=' + page + '&_buscar='+ buscar + '&_filtro='+ filtro;
@@ -230,6 +251,24 @@ export default {
           });
     },
     agregar(){
+      
+        this.comprobarEmail();
+        
+        if(!this.nombre || !this.email || !this.clave1 || !this.clave2)
+        {
+          this.msjCamposVacios();
+          return;
+        }
+
+        if(!this.validEmail())
+        {
+          this.errorEmail = true;
+          return;
+        }
+
+        if(this.emailRegistrado)
+          return;
+
         let me = this;
 
         const params = {
@@ -241,13 +280,47 @@ export default {
 
         axios.post('/usuarios/agregar',params)
         .then(function (response) {
-            console.log(response.data);
             me.cerrarModal();
             me.msjAgregar();
             me.listar(1,'','name');
         }).catch(function (error) {
             console.log(error);
         });
+    },
+    eliminar(id){
+      Swal.fire({
+        title: '¿Estas seguro?',
+        text: "Estas apunto de borrar este usuario!",
+        type: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Si, borrar usuario!',
+        cancelButtonText: 'Cancelar'
+      }).then((result) => {
+        
+        let me = this;
+
+        const params = {
+                id : id
+        };
+
+        axios.post('/usuarios/eliminar',params)
+        .then(function (response) {
+          
+          if (result.value) {
+              Swal.fire(
+                'Exito!',
+                'Usuario borrado!',
+              )
+            }
+
+          me.listar(1,'','name');
+
+        }).catch(function (error) {
+            console.log(error);
+        });
+      });
     },
     msjAgregar(){
       Swal.fire({
@@ -264,6 +337,13 @@ export default {
         showConfirmButton: false,
         timer: 1500
       })
+    },
+    msjCamposVacios(){
+        Swal.fire({
+          type: 'error',
+          title: 'Oops...',
+          text: 'Complete todos los campos!',
+        });
     },
     cambiarPagina(page,buscar,filtro){
                 let me = this;
@@ -290,7 +370,59 @@ export default {
         this.clave2 = '';
         this.email = '';
         this.rol = 2;
-    }
+    },
+    validarCamposVacios(){
+     
+          if(!this.nombre){
+              this.nombreVacio = true; 
+          }
+          else{
+              this.nombreVacio = false;
+          }
+
+          if(!this.email){
+              this.emailVacio = true;            
+          }
+          else{
+              this.emailVacio = false;
+          }
+          if(!this.clave1){
+              this.clave1Vacio = true;           
+          }
+          else{
+              this.clave1Vacio = false;
+          }
+
+          if(!this.clave2){
+              this.clave2Vacio = true;  
+          }
+          else{
+              this.clave2Vacio = false;
+          } 
+      //arreglar el bug usando evento key up para validar que el email no este vacio...
+    },
+    validEmail(){
+        var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+        return re.test(this.email);
+    },
+    keyUpEmail(){
+        
+        this.validarCamposVacios();
+        
+        this.comprobarEmail();
+    },
+    comprobarEmail(){
+        let me=this;
+
+        var url= '/usuarios/comprobarEmail?email=' + this.email;
+        axios.get(url).then(function (response) {
+            var respuesta= response.data;
+            me.emailRegistrado = respuesta;
+        })  
+        .catch(function (error) {
+            console.log(error);
+        });
+    },
   }, 
   mounted() {
         this.listar(1,this.buscar,this.filtro);

@@ -23,3 +23,5 @@ Route::get('/home', 'HomeController@index')->name('home');
 //Rutas Usuarios
 Route::get('/usuarios', 'UsuariosController@listarUsuarios');
 Route::post('/usuarios/agregar', 'UsuariosController@agregarUsuario');
+Route::get('/usuarios/comprobarEmail', 'UsuariosController@comprobarEmail');
+Route::post('/usuarios/eliminar', 'UsuariosController@eliminarUsuario');

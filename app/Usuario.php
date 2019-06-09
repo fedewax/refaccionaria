@@ -25,4 +25,14 @@ class Usuario extends Model
         $obj->rol = $array["rol"];
         $obj->save();
     }
+
+    protected static function comprobarEmailM($email)
+    {
+        return self::select('email')->where('email', $email)->first();
+    }
+
+    protected static function eliminarUsuarioM($id)
+    {
+        Usuario::destroy($id);
+    }
 }
