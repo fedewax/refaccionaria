@@ -40,6 +40,17 @@ class UsuariosController extends Controller
                         
         Usuario::agregarUsuarioM($array);
     }
+
+    protected static function editarUsuario(Request $request)
+    {
+        
+        $array = array( 'id' => $request->id, 
+                        'nombre' => $request->nombre, 
+                        'email' => $request->email,
+                        'rol'   => $request->rol);
+                        
+        Usuario::editarUsuarioM($array);
+    }
     
     protected static function comprobarEmail(Request $request)
     {

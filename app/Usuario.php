@@ -8,6 +8,10 @@ class Usuario extends Model
 {
     protected $table = 'users';
 
+    protected $hidden = [
+        'password', 'remember_token'
+    ];
+ 
     protected static function listarUsuariosM($buscar,$filtro)
     {
         if (!$buscar)
@@ -22,6 +26,15 @@ class Usuario extends Model
         $obj->name = $array["nombre"];
         $obj->email = $array["email"];
         $obj->password = $array["clave"];
+        $obj->rol = $array["rol"];
+        $obj->save();
+    }
+    
+    protected static function editarUsuarioM($array)
+    {
+        $obj = User::find($array["id"]);
+        $obj->name = $array["nombre"];
+        $obj->email = $array["email"];
         $obj->rol = $array["rol"];
         $obj->save();
     }

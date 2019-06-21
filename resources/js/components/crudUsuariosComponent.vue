@@ -111,32 +111,39 @@
                   </div>
                   <hr>
                 </b-form-group>
-                
-                <b-row>
-                  <b-col lg="6">
-                    <b-input-group>
-                      <b-form-group class="mb-0 mt-0" label="Contraseña:">
-                        <b-input type="password" v-model="clave1" @keyup="validarCamposVacios()" :state="!clave1Vacio" autocomplete="off"></b-input>
-                        <b-form-invalid-feedback>
-                          Por favor escribe una contraseña.
-                        </b-form-invalid-feedback>
-                       </b-form-group>
-                    </b-input-group>
-                  </b-col>
+                  
+                  <div v-show="modoAgregar">
+                    <b-row>
+                      <b-col lg="6">
+                        <b-input-group>
+                          <b-form-group class="mb-0 mt-0" label="Contraseña:">
+                            <b-input type="password" v-model="clave1" @keyup="validarCamposVacios()" :state="!clave1Vacio" autocomplete="off"></b-input>
+                            <b-form-invalid-feedback>
+                              Por favor escribe una contraseña.
+                            </b-form-invalid-feedback>
+                          </b-form-group>
+                        </b-input-group>
+                      </b-col>
 
-                  <b-col lg="6">
-                    <b-input-group>
-                      <b-form-group class="mb-0 mt-0" label="Contraseña de confirmacion:">
-                        <b-input type="password" v-model="clave2" @keyup="validarCamposVacios()" :state="!clave2Vacio" autocomplete="off"></b-input>
-                        <b-form-invalid-feedback>
-                          Por favor escribe la contraseña de confirmación.
-                        </b-form-invalid-feedback>
-                      </b-form-group>
-                    </b-input-group>
-                  </b-col>
-                </b-row>
-                <hr>
-              
+                      <b-col lg="6">
+                        <b-input-group>
+                          <b-form-group class="mb-0 mt-0" label="Contraseña de confirmacion:">
+                            <b-input type="password" v-model="clave2" @keyup="validarCamposVacios()" :state="!clave2Vacio" autocomplete="off"></b-input>
+                            <b-form-invalid-feedback>
+                              Por favor escribe la contraseña de confirmación.
+                            </b-form-invalid-feedback>
+                            
+                          </b-form-group>
+                        </b-input-group>
+                      </b-col>
+                      &nbsp;&nbsp;
+                      <div v-show="clavesDiferentes">
+                          <p style="color:red;">Las contraseñas no coinciden.</p>
+                      </div>
+                    </b-row>
+                    <hr>
+                  </div>
+             
                 <b-form-group class="mb-0 mt-0" label="Rol:" label-for="input-3">
                   <select v-model="rol" class="form-control">
                     <option value="1">Administrador</option>
@@ -149,13 +156,22 @@
           </b-container>
 
             <div slot="modal-footer" class="w-100">
-             <b-button
+              <b-button v-if="modoAgregar"
                 variant="primary"
                 class="float-right ml-2"
                 @click="agregar"
               >Agrear
               <i class="fas fa-plus-circle"></i>
               </b-button>
+
+              <b-button v-else
+                variant="primary"
+                class="float-right ml-2"
+                @click="editar"
+              >Editar
+              <i class="fas fa-pen"></i>
+              </b-button>
+
               <b-button
                 variant="danger"
                 class="float-right"
@@ -175,15 +191,17 @@ import Swal from 'sweetalert2'
 export default {
   data() {
     return {
+      modoAgregar : true,
       //campos vacios
       nombreVacio : true,
       emailVacio : true,
       clave1Vacio : true,
       clave2Vacio : true,
       //fin comapos vacios
-      //validaciones email.
+      //validaciones email y conntraseñas.
       errorEmail : false,
       emailRegistrado : false,
+      clavesDiferentes : false,
       //fin falidaciones email.
       filtro : 'name',
       buscar : '',
@@ -268,6 +286,9 @@ export default {
 
         if(this.emailRegistrado)
           return;
+        
+        if(this.validarClavesDistintas())
+          return;
 
         let me = this;
 
@@ -282,6 +303,43 @@ export default {
         .then(function (response) {
             me.cerrarModal();
             me.msjAgregar();
+            me.listar(1,'','name');
+        }).catch(function (error) {
+            console.log(error);
+        });
+    },
+    editar(){
+        this.comprobarEmail();
+        
+        if(!this.nombre || !this.email)
+        {
+          this.msjCamposVacios();
+          return;
+        }
+
+        if(!this.validEmail())
+        {
+          this.errorEmail = true;
+          return;
+        }
+
+        if(this.emailRegistrado)
+          return;
+        
+
+        let me = this;
+
+        const params = {
+                id : this.id,
+                email : this.email,
+                nombre : this.nombre,
+                rol : this.rol
+        };
+
+        axios.post('/usuarios/editar',params)
+        .then(function (response) {
+            me.cerrarModal();
+            me.msjEditar();
             me.listar(1,'','name');
         }).catch(function (error) {
             console.log(error);
@@ -352,7 +410,7 @@ export default {
                 //Envia la petición para visualizar la data de esa página
                 me.listar(page,buscar,filtro);
     },
-    abrirModal(modo){
+    abrirModal(modo, usuario = []){
         this.show = true;
         if(modo == 'agregar')
         {
@@ -360,7 +418,18 @@ export default {
         }
         else
         {
+          this.modoAgregar = false;
           this.titutloModal= 'EDITAR USUARIO';
+          this.nombre = usuario.name;
+          this.email = usuario.email;
+          this.rol = usuario.rol;
+          this.id  = usuario.id;
+          this.clave1 = "";
+          this.clave2 = "";
+          this.emailVacio = false;
+          this.nombreVacio = false;
+          this.emailRegistrado = false;
+          
         }
     },
     cerrarModal(){
@@ -405,8 +474,18 @@ export default {
         var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
         return re.test(this.email);
     },
-    keyUpEmail(){
-        
+    validarClavesDistintas(){
+        if(this.clave1 != this.clave2)
+        {   
+            this.clavesDiferentes = true;
+            return true;
+        }
+        else
+        {
+            this.clavesDiferentes = false;
+        }
+    },
+    keyUpEmail(){  
         this.validarCamposVacios();
         
         this.comprobarEmail();
