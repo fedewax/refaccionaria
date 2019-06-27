@@ -31,19 +31,21 @@ class productosController extends Controller
 
     protected static function agregarProducto(Request $request)
     {   
-       
+        if (!$request->ajax()) return redirect('/');
+        
         $array = array('nombre'     => $request->nombre, 
                        'descripcion'=> $request->descripcion,
                        'existencia' => $request->existencia,
                        'precio'     => $request->precio
                     );
 
-        Producto::agregarUsuarioM($array);
+        Producto::agregarProductoM($array);
     }
 
     protected static function editarProducto(Request $request)
     {
-        
+        if (!$request->ajax()) return redirect('/');
+
         $array = array( 'id'         => $request->id, 
                         'nombre'     => $request->nombre, 
                         'descripcion'=> $request->descripcion,
@@ -68,6 +70,8 @@ class productosController extends Controller
 
     protected static function eliminarProducto(Request $request)
     {
+        if (!$request->ajax()) return redirect('/');
+
         $id = $request->id;
 
         Producto::eliminarProductoM($id);

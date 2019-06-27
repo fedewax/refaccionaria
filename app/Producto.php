@@ -21,7 +21,7 @@ class Producto extends Model
         Producto::destroy($id);
     }
 
-    protected static function agregarUsuarioM($array)
+    protected static function agregarProductoM($array)
     {
         $obj = new Producto();
         $obj->nombre = $array["nombre"];
@@ -45,6 +45,4 @@ class Producto extends Model
     {
         return self::select('nombre')->where('nombre', $nombre)->first();
     }
-
-    
 }

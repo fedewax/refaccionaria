@@ -2,7 +2,7 @@
 <div>
     <!-- Page Heading -->
      
-          <h1 class="h3 text-gray-800">LISTA DE PRODCUTOS</h1> 
+          <h1 class="h3 text-gray-800">LISTA DE DETALLES DE VENTA</h1> 
           <b-button @click="abrirModal('agregar')" variant="primary">Agregar &nbsp; <i class="fas fa-plus-circle"></i></b-button>
           <br>
           <!-- DataTales Example -->
@@ -27,28 +27,22 @@
                 <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                   <thead>
                     <tr>
-                      <th style="width:25%">Nombre</th>
-                      <th style="width:40%">Descrpcion</th>
-                      <th style="width:10%">Exitencia</th>
-                      <th style="width:10%">Precio</th>
-                      <th style="width:15%">Opciones</th>
+                      <th style="width:15%">No. venta asociado</th>
+                      <th style="width:70%">Producto</th>
+                      <th style="width:15%">Cantidad</th>
                     </tr>
                   </thead>
                   <tbody>
-                    <tr v-for="producto in arrayProductos" :key="producto.id">
-                      <td v-text="producto.nombre"></td>          
-                      <td v-text="producto.descripcion"></td>
-                      <td v-text="producto.existencia"></td>
-                      <td v-text="'$'+producto.precio"></td>
+                    <tr v-for="detalle in arrayDetalles" :key="detalle.id">
+
+                      <td v-text="detalle.venta_id"></td>
+                      <td v-text="detalle.nombre_producto"></td>
+                      <td v-text="detalle.cantidad"></td>
 
                       <td>
-                      <!--botton actulizar que manda 3 parametros al la funcion -->
-                      <button type="button" @click="abrirModal('editar',producto)" class="btn btn-warning btn-sm">
+                      <button type="button" @click="abrirModal('editar',detalle)" class="btn btn-warning btn-sm">
                          <i class="fas fa-user-edit"></i>
                       </button> &nbsp;
-                      <button type="button" class="btn btn-danger btn-sm" @click="eliminar(producto.id)">
-                          <i class="fas fa-trash-alt"></i>
-                      </button>
                       </td>
                     </tr>              
                   </tbody>
@@ -88,31 +82,31 @@
             <div>
               <b-form>
               
-                <b-form-group class="mb-0 mt-0" label="Nombre:">
-                  <b-input type="text" v-model="nombre" :state="!nombreVacio" @keyup="validarProducto()" autocomplete="off"></b-input>
+                <b-form-group class="mb-0 mt-0" label="Vendedor:">
+                    <select class="form-control" :state="!venta_idVacio" v-model="venta_id">
+                        <option value="0" disabled>Seleccione un numero de venta:</option>
+                        <option v-for="venta in arrayVentas" :key="venta.id" :value="venta.id" v-text="venta.email"></option>
+                    </select>
                   <b-form-invalid-feedback >
-                    Por favor escribe el nombre del producto.
+                    Por favor seleccione un numero de venta.
                   </b-form-invalid-feedback>
-                   <div v-show="productoRegistrado">
-                        <p style="color:red;">Lo sentimos este producto ya esta registrado.</p>
-                  </div>
+                 
                   <hr>
                 </b-form-group>
                 
                 <b-form-group  class="mb-0 mt-0" label="Descripcion:">
-                  <b-form-input type="text" v-model="descripcion"></b-form-input>
+                  <b-form-input type="date" v-model="producto_id" :state="!producto_idVacio"></b-form-input>
+                  <b-form-invalid-feedback>
+                    Por favor seleccione algun producto.
+                  </b-form-invalid-feedback>
                   <hr>
                 </b-form-group>
 
-                <b-form-group  class="mb-0 mt-0" label="Existencia:">
-                  <b-form-input type="number" v-model="existencia"></b-form-input>
-                  <hr>
-                </b-form-group>
 
                 <b-form-group  class="mb-0 mt-0" label="Precio:">
-                  <b-form-input  type="number" v-model="precio" :state="!precioVacio"  @keyup="validarCamposVacios()" ></b-form-input>
+                  <b-form-input  type="number" v-model="cantidad" :state="!cantidadVacio"  @keyup="validarCamposVacios()" ></b-form-input>
                   <b-form-invalid-feedback>
-                    Por favor escribe el precio del producto.
+                    Por favor escribe la cantidad.
                   </b-form-invalid-feedback>
                   <hr>
                
@@ -159,18 +153,17 @@ export default {
   data() {
     return {
       
-      productoRegistrado : false,
       modoAgregar : true,
       //campos vacios
-      nombreVacio : true,
-      precioVacio : true,
+      venta_idVacio : true,
+      producto_idVacio : true,
+      cantidadVacio :true,
       //fin comapos vacios
       id : 0,
       buscar : '',
-      nombre : '',
-      descripcion : '',
-      existencia : null,
-      precio : null,
+      venta_id : 0,
+      producto_id : 0,
+      cantidad : 0,
       pagination : {
                 'total': 0,
                 'current_page' : 0,
@@ -180,7 +173,9 @@ export default {
                 'to' : 0,
                 },
       offset : 3,
-      arrayProductos:[],
+      arrayDetalles :[],
+      arrayVentas : [],
+      arrayProductos : [],
       titutloModal: '',
       //propiedades del modal
       show : false,
@@ -218,11 +213,23 @@ export default {
     listar(page,buscar){
           let t=this;
           //enviar los paramtros recividos de la vista hacia el controlador
-          var url= '/productos?page=' + page + '&_buscar='+ buscar;
+          var url= '/detalles?page=' + page + '&_buscar='+ buscar;
+          axios.get(url).then(function (response) {
+              var respuesta = response.data;
+              t.arrayDetalles= respuesta.detalles.data;
+              t.pagination = respuesta.pagination;
+          })
+          .catch(function (error) {
+              console.log(error);
+          });
+    },
+    listarProductos(buscar){
+          let t=this;
+          //enviar los paramtros recividos de la vista hacia el controlador
+          var url= '/productos?page=' + 1 + '&_buscar='+ buscar;
           axios.get(url).then(function (response) {
               var respuesta = response.data;
               t.arrayProductos= respuesta.productos.data;
-              t.pagination = respuesta.pagination;
           })
           .catch(function (error) {
               console.log(error);
@@ -230,27 +237,22 @@ export default {
     },
     agregar(){
       
-        this.comprobarProducto();
         
-        if(!this.nombre || !this.precio)
+        if(!this.venta_id || !this.producto_id || !this.cantidad)
         {
           this.msjCamposVacios();
           return;
         }
-
-        if(this.productoRegistrado)
-          return;
   
         let me = this;
 
         const params = {
-            nombre : this.nombre,
-            descripcion : this.descripcion,
-            existencia : this.existencia,
-            precio : this.precio    
+            venta_id : this.venta_id,
+            producto_id : this.producto_id,
+            cantidad : this.cantidad
         };
 
-        axios.post('/productos/agregar',params)
+        axios.post('/detalles/agregar',params)
         .then(function (response) {
             me.cerrarModal();
             me.msjAgregar();
@@ -260,28 +262,24 @@ export default {
         });
     },
     editar(){
-        this.comprobarProducto();
-        
-        if(!this.nombre || !this.precio)
+         
+       
+        if(!this.venta_id || !this.producto_id || !this.cantidad)
         {
           this.msjCamposVacios();
           return;
         }
-
-        if(this.productoRegistrado)
-          return;
   
         let me = this;
 
         const params = {
             id : this.id,
-            nombre : this.nombre,
-            descripcion : this.descripcion,
-            existencia : this.existencia,
-            precio : this.precio    
+            venta_id : this.venta_id,
+            producto_id : this.producto_id,
+            cantidad : this.cantidad
         };
 
-        axios.post('/productos/editar',params)
+        axios.post('/detalles/editar',params)
         .then(function (response) {
             me.cerrarModal();
             me.msjEditar();
@@ -289,41 +287,6 @@ export default {
         }).catch(function (error) {
             console.log(error);
         });
-    },
-    eliminar(id){
-      Swal.fire({
-        title: '¿Estas seguro?',
-        text: "Estas apunto de borrar este usuario!",
-        type: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#3085d6',
-        cancelButtonColor: '#d33',
-        confirmButtonText: 'Si, borrar usuario!',
-        cancelButtonText: 'Cancelar'
-      }).then((result) => {
-        
-        let me = this;
-
-        const params = {
-                id : id
-        };
-
-        axios.post('/productos/eliminar',params)
-        .then(function (response) {
-          
-          if (result.value) {
-              Swal.fire(
-                'Exito!',
-                'Usuario borrado!',
-              )
-            }
-
-          me.listar(1,'','name');
-
-        }).catch(function (error) {
-            console.log(error);
-        });
-      });
     },
     msjAgregar(){
       Swal.fire({
@@ -355,25 +318,24 @@ export default {
                 //Envia la petición para visualizar la data de esa página
                 me.listar(page,buscar);
     },
-    abrirModal(modo, producto = []){
+    abrirModal(modo, detalle = []){
         this.show = true;
         if(modo == 'agregar')
         {
-          this.titutloModal = 'AGREGAR PRODUCTO';
+          this.titutloModal = 'AGREGAR DETALLE';
         }
         else
         {
           this.modoAgregar = false;
-          this.titutloModal= 'EDITAR PRODUCTO';
-          this.nombre = producto.nombre;
-          this.descripcion = producto.descripcion;
-          this.existencia = producto.existencia;
-          this.precio  = producto.precio;
-          this.id = producto.id;
+          this.titutloModal= 'EDITAR DETALLE';
+          this.venta_id = detalle.venta.id;
+          this.producto_id = detalle.producto_id;
+          this.cantidad = venta.cantidad;
+          this.id = detalle.id;
 
-          this.nombreVacio = false;
-          this.precioVacio = false;
-          this.productoRegistrado = false;
+          this.venta_idVacio = false;
+          this.producto_idVacio = false;
+          this.cantidadVacio = false;
           
         }
     },
@@ -385,39 +347,24 @@ export default {
         this.descripcion = '';
     },
     validarCamposVacios(){
-          if(!this.nombre){
-              this.nombreVacio = true; 
-          }
-          else{
-              this.nombreVacio = false;
-          }
+        if(!this.nombre){
+            this.nombreVacio = true; 
+        }
+        else{
+            this.nombreVacio = false;
+        }
 
-          if(!this.precio){
-              this.precioVacio = true;            
-          }
-          else{
-              this.precioVacio = false;
-          }
-    },
-    validarProducto(){
-        this.validarCamposVacios();
-        this.comprobarProducto();
-    },
-    comprobarProducto(){
-        let me=this;
-
-        var url= '/productos/comprobarProducto?nombre=' + this.nombre;
-        axios.get(url).then(function (response) {
-            var respuesta= response.data;
-            me.productoRegistrado = respuesta;
-        })  
-        .catch(function (error) {
-            console.log(error);
-        });
-    },
+        if(!this.precio){
+            this.precioVacio = true;            
+        }
+        else{
+            this.precioVacio = false;
+        }
+    }
   }, 
   mounted() {
         this.listar(1,this.buscar);
+        this.listarProductos(this.buscar);
   }
 }
 </script>

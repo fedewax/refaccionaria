@@ -63,6 +63,10 @@
           </crud-usuarios-component>
           <crud-productos-component v-if="opcion == 2">
           </crud-productos-component>
+           <crud-detalles-component v-if="opcion == 3">
+          </crud-detalles-component>
+          <crud-ventas-component v-if="opcion == 4">
+          </crud-ventas-component>
 
         </div>
         <!-- /.container-fluid -->

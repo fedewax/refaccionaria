@@ -31,6 +31,8 @@ class UsuariosController extends Controller
 
     protected static function agregarUsuario(Request $request)
     {
+        if (!$request->ajax()) return redirect('/');
+        
         $clave = bcrypt($request->clave1);
         
         $array = array('nombre' => $request->nombre, 
@@ -43,7 +45,8 @@ class UsuariosController extends Controller
 
     protected static function editarUsuario(Request $request)
     {
-        
+        if (!$request->ajax()) return redirect('/');
+
         $array = array( 'id' => $request->id, 
                         'nombre' => $request->nombre, 
                         'email' => $request->email,
@@ -66,7 +69,10 @@ class UsuariosController extends Controller
 
     protected static function eliminarUsuario(Request $request)
     {
-        $id = $request->id;    
+        if (!$request->ajax()) return redirect('/');
+        
+        $id = $request->id; 
+           
         Usuario::eliminarUsuarioM($id);
     }
 

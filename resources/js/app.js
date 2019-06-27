@@ -18,6 +18,8 @@ Vue.component('example-component', require('./components/ExampleComponent.vue').
 Vue.component('principal-component', require('./components/principalComponent.vue').default);
 Vue.component('crud-usuarios-component', require('./components/crudUsuariosComponent.vue').default);
 Vue.component('crud-productos-component', require('./components/crudProductosComponent.vue').default);
+Vue.component('crud-ventas-component', require('./components/crudVentasComponent.vue').default);
+Vue.component('crud-detalles-component', require('./components/crudDetallesComponent.vue').default);
 
 
 const app = new Vue({
