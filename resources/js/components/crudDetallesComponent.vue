@@ -29,7 +29,8 @@
                     <tr>
                       <th style="width:15%">No. venta asociado</th>
                       <th style="width:70%">Producto</th>
-                      <th style="width:15%">Cantidad</th>
+                      <th style="width:10%">Cantidad</th>
+                      <th style="width:10%">Opciones</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -82,11 +83,11 @@
             <div>
               <b-form>
               
-                <b-form-group class="mb-0 mt-0" label="Vendedor:">
-                    <select class="form-control" :state="!venta_idVacio" v-model="venta_id">
-                        <option value="0" disabled>Seleccione un numero de venta:</option>
-                        <option v-for="venta in arrayVentas" :key="venta.id" :value="venta.id" v-text="venta.email"></option>
-                    </select>
+                <b-form-group class="mb-0 mt-0" label="No. de venta:">
+                  <select class="form-control" :state="!venta_idVacio" v-model="venta_id">
+                      <option value="0" disabled>Seleccione un numero de venta:</option>
+                      <option v-for="venta in arrayVentas" :key="venta.id" :value="venta.id" v-text="venta.id"></option>
+                  </select>
                   <b-form-invalid-feedback >
                     Por favor seleccione un numero de venta.
                   </b-form-invalid-feedback>
@@ -94,16 +95,19 @@
                   <hr>
                 </b-form-group>
                 
-                <b-form-group  class="mb-0 mt-0" label="Descripcion:">
-                  <b-form-input type="date" v-model="producto_id" :state="!producto_idVacio"></b-form-input>
+                <b-form-group  class="mb-0 mt-0" label="Producto:">
+                  <select class="form-control" :state="!producto_idVacio" v-model="producto_id">
+                        <option value="0" disabled>Seleccione un producto:</option>
+                        <option v-for="producto in arrayProductos" :key="producto.id" :value="producto.id" v-text="producto.nombre"></option>
+                  </select>
                   <b-form-invalid-feedback>
-                    Por favor seleccione algun producto.
+                    Por favor seleccione un producto.
                   </b-form-invalid-feedback>
                   <hr>
                 </b-form-group>
 
 
-                <b-form-group  class="mb-0 mt-0" label="Precio:">
+                <b-form-group  class="mb-0 mt-0" label="Cantidad:">
                   <b-form-input  type="number" v-model="cantidad" :state="!cantidadVacio"  @keyup="validarCamposVacios()" ></b-form-input>
                   <b-form-invalid-feedback>
                     Por favor escribe la cantidad.
@@ -235,6 +239,18 @@ export default {
               console.log(error);
           });
     },
+    listarVentas(buscar){
+          let t=this;
+          //enviar los paramtros recividos de la vista hacia el controlador
+          var url= '/ventas?page=' + 1 + '&_buscar='+ buscar;
+          axios.get(url).then(function (response) {
+              var respuesta = response.data;
+              t.arrayVentas= respuesta.ventas.data;
+          })
+          .catch(function (error) {
+              console.log(error);
+          });
+    },
     agregar(){
       
         
@@ -263,7 +279,6 @@ export default {
     },
     editar(){
          
-       
         if(!this.venta_id || !this.producto_id || !this.cantidad)
         {
           this.msjCamposVacios();
@@ -328,9 +343,9 @@ export default {
         {
           this.modoAgregar = false;
           this.titutloModal= 'EDITAR DETALLE';
-          this.venta_id = detalle.venta.id;
+          this.venta_id = detalle.venta_id;
           this.producto_id = detalle.producto_id;
-          this.cantidad = venta.cantidad;
+          this.cantidad = detalle.cantidad;
           this.id = detalle.id;
 
           this.venta_idVacio = false;
@@ -365,6 +380,7 @@ export default {
   mounted() {
         this.listar(1,this.buscar);
         this.listarProductos(this.buscar);
+        this.listarVentas(this.buscar);
   }
 }
 </script>

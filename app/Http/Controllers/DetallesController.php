@@ -33,9 +33,9 @@ class DetallesController extends Controller
     {   
         if (!$request->ajax()) return redirect('/');
         
-        $array = array('usuario_id'=> $request->usuario_id, 
-                       'fecha' => $fecha2,
-                       'total' => $request->total
+        $array = array('venta_id'    => $request->venta_id, 
+                       'producto_id' => $request->producto_id,
+                       'cantidad'    => $request->cantidad
                     );
 
         Detalle::agregarDetalleM($array);
@@ -45,12 +45,12 @@ class DetallesController extends Controller
     {
         if (!$request->ajax()) return redirect('/');
         
-        $array = array( 'id'        => $request->id, 
-                        'usuario_id'=> $request->usuario_id, 
-                        'fecha'     => $request->fecha,
-                        'total'     => $request->total
+        $array = array( 'id'          => $request->id, 
+                        'venta_id'=> $request->venta_id, 
+                        'producto_id' => $request->producto_id,
+                        'cantidad'    => $request->cantidad
                     );
-                        
+               
         Detalle::editarDetalleM($array);
     }
 }

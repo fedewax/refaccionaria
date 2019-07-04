@@ -25,6 +25,8 @@
     },
     "dependencies": {
         "bootstrap-vue": "^2.0.0-rc.20",
-        "sweetalert2": "^8.11.7"
+        "sweetalert2": "^8.11.7",
+        "vue-select": "^3.1.0",
+        "vue-select2": "^0.2.6"
     }
 }

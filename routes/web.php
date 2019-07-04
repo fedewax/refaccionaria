@@ -32,6 +32,7 @@ Route::post('/productos/eliminar', 'ProductosController@eliminarProducto');
 Route::get('/productos/comprobarProducto', 'ProductosController@comprobarProducto');
 Route::post('/productos/agregar', 'ProductosController@agregarProducto');
 Route::post('/productos/editar', 'ProductosController@editarProducto');
+Route::get('/productos/selectProductos','ProductosController@selectProductos');
 
 //Rutas ventas
 Route::get('/ventas', 'VentasController@listarVentas');

@@ -33,18 +33,18 @@ class Detalle extends Model
     protected static function agregarDetalleM($array)
     {
         $obj = new Detalle();
-        $obj->usuario_id = $array["usuario_id"];
-        $obj->fecha = $array["fecha"];
-        $obj->total = $array["total"];
+        $obj->venta_id = $array["venta_id"];
+        $obj->producto_id = $array["producto_id"];
+        $obj->cantidad = $array["cantidad"];
         $obj->save();
     }
     
     protected static function editarDetalleM($array)
     {
         $obj = Detalle::find($array["id"]);
-        $obj->usuario_id = $array["usuario_id"];
-        $obj->fecha = $array["fecha"];
-        $obj->total = $array["total"];
+        $obj->venta_id = $array["venta_id"];
+        $obj->producto_id = $array["producto_id"];
+        $obj->cantidad = $array["cantidad"];
         $obj->save();
     }
 }

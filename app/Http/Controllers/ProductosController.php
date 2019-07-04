@@ -76,4 +76,16 @@ class productosController extends Controller
 
         Producto::eliminarProductoM($id);
     }
+
+    protected static function selectProductos(Request $request)
+    {
+        if (!$request->ajax()) return redirect('/');
+ 
+        $filtro = $request->filtro;
+
+        $data = Producto::where('nombre', 'like', $filtro . '%')
+        ->orderBy('nombre', 'asc')->get();
+
+         return response()->json($data);
+    }
 }

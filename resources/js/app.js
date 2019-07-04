@@ -12,6 +12,10 @@ import BootstrapVue from 'bootstrap-vue'
 import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap-vue/dist/bootstrap-vue.css'
 
+//vue-select
+import vSelect from 'vue-select'
+Vue.component('v-select', vSelect)
+
 Vue.use(BootstrapVue)
 
 Vue.component('example-component', require('./components/ExampleComponent.vue').default);
@@ -20,7 +24,7 @@ Vue.component('crud-usuarios-component', require('./components/crudUsuariosCompo
 Vue.component('crud-productos-component', require('./components/crudProductosComponent.vue').default);
 Vue.component('crud-ventas-component', require('./components/crudVentasComponent.vue').default);
 Vue.component('crud-detalles-component', require('./components/crudDetallesComponent.vue').default);
-
+Vue.component('carrito-component', require('./components/carritoComponent.vue').default);
 
 const app = new Vue({
     el: '#app',

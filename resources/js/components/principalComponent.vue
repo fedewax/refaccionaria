@@ -26,7 +26,7 @@
         <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
           <div class="bg-white py-2 collapse-inner rounded">
             <a @click="elegirContenido(1)" class="collapse-item">Lista de usuarios</a>
-            <a @click="elegirContenido(2)" class="collapse-item"> Lista de productos</a>
+            <a @click="elegirContenido(2)" class="collapse-item">Lista de productos</a>
             <a @click="elegirContenido(3)" class="collapse-item">Lista de detalles de ventas</a>
             <a @click="elegirContenido(4)" class="collapse-item">Lista de ventas</a>
           </div>
@@ -45,6 +45,21 @@
           </div>
         </div>
       </li>
+
+       <!-- Nav Item - Utilities Collapse Menu -->
+      <li class="nav-item">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseUtilitie" aria-expanded="true" aria-controls="collapseUtilities">
+          <i class="fas fa-cart-plus"></i>
+          <span>Carrito de ventas</span>
+        </a>
+        <div id="collapseUtilitie" class="collapse" aria-labelledby="headingUtilities" data-parent="#accordionSidebar">
+          <div class="bg-white py-2 collapse-inner rounded">
+             <a @click="elegirContenido(6)" class="collapse-item">Carrito de ventas</a>
+          </div>
+        </div>
+      </li>
+
+     
 
       <!-- Divider -->
       <hr class="sidebar-divider">
@@ -67,7 +82,8 @@
           </crud-detalles-component>
           <crud-ventas-component v-if="opcion == 4">
           </crud-ventas-component>
-
+          <carrito-component v-if="opcion == 6">
+          </carrito-component>
         </div>
         <!-- /.container-fluid -->
 
