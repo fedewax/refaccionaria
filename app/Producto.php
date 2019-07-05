@@ -16,6 +16,14 @@ class Producto extends Model
             return self::where('nombre', 'like','%'.$buscar.'%')->orderBy('id','desc')->paginate(5);
     }
 
+    protected static function listarProductos2M($buscar)
+    {
+        if (!$buscar)
+            return self::orderBy('id', 'desc')->paginate(4);
+        else   
+            return self::where('nombre', 'like','%'.$buscar.'%')->orderBy('id','desc')->paginate(5);
+    }
+
     protected static function eliminarProductoM($id)
     {
         Producto::destroy($id);

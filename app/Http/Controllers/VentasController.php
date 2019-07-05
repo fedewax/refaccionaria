@@ -63,4 +63,9 @@ class VentasController extends Controller
                         
         Venta::editarVentaM($array);
     }
+
+    protected static function agregarVentaCompleta (Request $request)
+    {
+        
+    }
 }

@@ -28,6 +28,7 @@ Route::post('/usuarios/eliminar', 'UsuariosController@eliminarUsuario');
 
 //Rutas productos
 Route::get('/productos', 'ProductosController@listarProductos');
+Route::get('/productos2', 'ProductosController@listarProductos2');
 Route::post('/productos/eliminar', 'ProductosController@eliminarProducto');
 Route::get('/productos/comprobarProducto', 'ProductosController@comprobarProducto');
 Route::post('/productos/agregar', 'ProductosController@agregarProducto');
@@ -37,6 +38,7 @@ Route::get('/productos/selectProductos','ProductosController@selectProductos');
 //Rutas ventas
 Route::get('/ventas', 'VentasController@listarVentas');
 Route::post('/ventas/agregar', 'VentasController@agregarVenta');
+Route::post('/ventas/agregarVenta', 'VentasController@agregarVentaCompleta');
 Route::post('/ventas/editar', 'VentasController@editarVenta');
 
 //Rutas ventas

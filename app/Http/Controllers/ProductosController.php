@@ -29,6 +29,28 @@ class productosController extends Controller
         ]; 
     }
 
+    protected static function listarProductos2 (Request $request)
+    {
+         if (!$request->ajax()) return redirect('/');
+
+        $buscar = $request->_buscar;
+     
+         
+        $obj = Producto::listarProductos2M($buscar);
+    
+        return [
+            'pagination' => [
+                'total'        => $obj->total(),
+                'current_page' => $obj->currentPage(),
+                'per_page'     => $obj->perPage(),
+                'last_page'    => $obj->lastPage(),
+                'from'         => $obj->firstItem(),
+                'to'           => $obj->lastItem(),
+            ],
+            'productos' => $obj
+        ]; 
+    }
+
     protected static function agregarProducto(Request $request)
     {   
         if (!$request->ajax()) return redirect('/');
