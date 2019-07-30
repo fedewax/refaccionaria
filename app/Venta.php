@@ -34,6 +34,8 @@ class Venta extends Model
         $obj->fecha = $array["fecha"];
         $obj->total = $array["total"];
         $obj->save();
+        $venta_id = $obj->id;
+        return $venta_id;
     }
     
     protected static function editarVentaM($array)

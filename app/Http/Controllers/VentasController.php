@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Venta;
+use App\Detalle;
 use Carbon\Carbon;
 
 class VentasController extends Controller
@@ -13,8 +14,7 @@ class VentasController extends Controller
         if (!$request->ajax()) return redirect('/');
 
         $buscar = $request->_buscar;
-     
-         
+             
         $obj = Venta::listarVentasM($buscar);
     
         return [
@@ -42,7 +42,7 @@ class VentasController extends Controller
         $array = array('usuario_id'=> $request->usuario_id, 
                        'fecha' => $fecha2,
                        'total' => $request->total
-                    );
+                      );
 
         Venta::agregarVentaM($array);
     }
@@ -57,15 +57,32 @@ class VentasController extends Controller
         
         $array = array( 'id'        => $request->id, 
                         'usuario_id'=> $request->usuario_id, 
-                        'fecha'     => $request->fecha,
+                        'fecha'     => $request->fecha2,
                         'total'     => $request->total
-                    );
+                      );
                         
         Venta::editarVentaM($array);
     }
 
-    protected static function agregarVentaCompleta (Request $request)
+    protected static function agregarVentaCompleta(Request $request)
     {
+        $fecha = Carbon::now();
+
+        $usuario_id = auth()->id();
+
+        $fecha = Carbon::parse($request->fecha);
         
+        $fecha2 = $fecha->format('Y-m-d',$fecha);
+
+        $array = array('usuario_id' => $usuario_id,
+                       'fecha' => $fecha2,
+                       'total' => $request->total
+                       );
+
+        $venta_id = Venta::agregarVentaM($array);
+
+        $array2 = $request->arrayDetalles;
+
+        Detalle::agregarDetallesM($array2,$venta_id);
     }
 }

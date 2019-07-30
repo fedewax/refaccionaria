@@ -41,7 +41,10 @@
         </a>
         <div id="collapseUtilities" class="collapse" aria-labelledby="headingUtilities" data-parent="#accordionSidebar">
           <div class="bg-white py-2 collapse-inner rounded">
-            <a class="collapse-item">Colors</a>
+            <a @click="elegirContenido(5)" class="collapse-item">Producto mas vendido</a>
+            <a @click="elegirContenido(7)" class="collapse-item">Producto menos vendido</a>
+            <a @click="elegirContenido(8)" class="collapse-item">Producto mas ganancia</a>
+
           </div>
         </div>
       </li>
@@ -82,6 +85,12 @@
           </crud-detalles-component>
           <crud-ventas-component v-if="opcion == 4">
           </crud-ventas-component>
+          <producto-mas-v-component v-if="opcion == 5">
+          </producto-mas-v-component>
+          <producto-menos-v-component v-if="opcion == 7">
+          </producto-menos-v-component>
+          <producto-mas-g-component v-if="opcion == 8">
+          </producto-mas-g-component>
           <carrito-component v-if="opcion == 6">
           </carrito-component>
         </div>

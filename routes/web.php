@@ -45,3 +45,8 @@ Route::post('/ventas/editar', 'VentasController@editarVenta');
 Route::get('/detalles', 'DetallesController@listarDetalles');
 Route::post('/detalles/agregar', 'DetallesController@agregarDetalle');
 Route::post('/detalles/editar', 'DetallesController@editarDetalle');
+
+//Rutas reportes 
+Route::get('/reporteMasV', 'ReportesController@reporteMasV');
+Route::get('/reporteMenosV', 'ReportesController@reporteMenosV');
+Route::get('/reporteMgV', 'ReportesController@reporteMasG');

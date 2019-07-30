@@ -38,6 +38,19 @@ class Detalle extends Model
         $obj->cantidad = $array["cantidad"];
         $obj->save();
     }
+
+    
+    protected static function agregarDetallesM($array,$venta_id)
+    {
+        foreach($array as $ep=>$det)
+        {
+            $obj = new Detalle();
+            $obj->venta_id = $venta_id;
+            $obj->producto_id = $det["id"];
+            $obj->cantidad = $det["cantidad"];         
+            $obj->save();
+        }    
+    }
     
     protected static function editarDetalleM($array)
     {

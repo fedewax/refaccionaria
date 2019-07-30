@@ -46,7 +46,7 @@ class DetallesController extends Controller
         if (!$request->ajax()) return redirect('/');
         
         $array = array( 'id'          => $request->id, 
-                        'venta_id'=> $request->venta_id, 
+                        'venta_id'    => $request->venta_id, 
                         'producto_id' => $request->producto_id,
                         'cantidad'    => $request->cantidad
                     );

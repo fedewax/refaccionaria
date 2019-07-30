@@ -267,31 +267,41 @@ export default {
         },
         agregarVenta(){
        
-        
-       
-      if (this.arrayDetalles.length<=0)
-      {
-          Swal.fire({
-                  type: 'error',
-                  title: 'Error...',
-                  text: 'Agregue productos a la venta!',
+          if (this.arrayDetalles.length<=0)
+          {
+              Swal.fire({
+                      type: 'error',
+                      title: 'Error...',
+                      text: 'Agregue productos a la venta!',
+              });
+              return;
+          }
+
+          let me = this;
+
+          const params = {
+              arrayDetalles : me.arrayDetalles,
+              total : me.total
+          };
+
+          axios.post('/ventas/agregarVenta',params)
+          .then(function (response) {
+              console.log(response.data);
+              me.listarProductos(1,'');
+              me.arrayDetalles = [];
+              me.msjAgregar();
+          }).catch(function (error) {
+              console.log(error);
           });
-          return;
-      }
-        let me = this;
-
-        const params = {
-            arrayDetalles : this.arrayDetalles   
-        };
-
-        axios.post('/ventas/agregarVenta',params)
-        .then(function (response) {
-            me.listarProductos(1,'');
-            this.arrayDetalles = [];
-        }).catch(function (error) {
-            console.log(error);
-        });
-        }
+        },
+        msjAgregar(){
+          Swal.fire({
+            type: 'success',
+            title: 'Venta agregada con exito!',
+            showConfirmButton: false,
+            timer: 1500
+          });
+        },
     },
     mounted() {
         this.listarProductos(1,this.buscar);

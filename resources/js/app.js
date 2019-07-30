@@ -25,6 +25,10 @@ Vue.component('crud-productos-component', require('./components/crudProductosCom
 Vue.component('crud-ventas-component', require('./components/crudVentasComponent.vue').default);
 Vue.component('crud-detalles-component', require('./components/crudDetallesComponent.vue').default);
 Vue.component('carrito-component', require('./components/carritoComponent.vue').default);
+Vue.component('producto-mas-v-component', require('./components/reporteMvComponent.vue').default);
+Vue.component('producto-menos-v-component', require('./components/reporteMenosComponent.vue').default);
+Vue.component('producto-mas-g-component', require('./components/reporteMgComponent.vue').default);
+
 
 const app = new Vue({
     el: '#app',
